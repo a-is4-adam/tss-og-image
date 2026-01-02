@@ -1,5 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/tanstack-react-start";
+import {
   Zap,
   Server,
   Route as RouteIcon,
@@ -98,6 +104,21 @@ function App() {
           <p className="text-2xl md:text-3xl text-gray-300 mb-4 font-light">
             The framework for next generation AI applications
           </p>
+          <div className="flex justify-center gap-4 mb-8">
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-cyan-500/50">
+                  Sign In
+                </button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <div className="flex flex-col items-center gap-4">
+                <UserButton />
+                <p className="text-white">You are signed in!</p>
+              </div>
+            </SignedIn>
+          </div>
           <p className="text-lg text-gray-400 max-w-3xl mx-auto mb-8">
             Full-stack framework powered by TanStack Router for React and Solid.
             Build modern applications with server functions, streaming, and type

@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { auth } from "@clerk/tanstack-react-start/server";
 
 const getCharacter = createServerFn({
   method: "GET",
@@ -14,10 +15,26 @@ const getCharacter = createServerFn({
     const res = await fetch(
       `https://rickandmortyapi.com/api/character/${data.id}`
     );
-    return res.json();
+    const character = (await res.json()) as {
+      id: string;
+      name: string;
+      image: string;
+    };
+    return character;
   });
 
+const authStateFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { isAuthenticated, userId } = await auth();
+
+  if (!isAuthenticated) {
+    return { userId: null };
+  }
+
+  return { userId };
+});
+
 export const Route = createFileRoute("/characters/$id")({
+  beforeLoad: async () => await authStateFn(),
   loader: ({ params }) => getCharacter({ data: { id: params.id } }),
   head: ({ loaderData }) => ({
     meta: [
@@ -48,10 +65,12 @@ export const Route = createFileRoute("/characters/$id")({
 });
 
 function CharacterComponent() {
+  const ctx = Route.useRouteContext();
   const character = Route.useLoaderData();
 
   return (
     <div style={{ padding: "20px" }}>
+      {ctx.userId ? <p>Logged in as {ctx.userId}</p> : <p>Not logged in</p>}
       <h1>{character.name}</h1>
       <p>ID: {character.id}</p>
       <img
