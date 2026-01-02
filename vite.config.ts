@@ -5,7 +5,7 @@ import viteReact from "@vitejs/plugin-react";
 import viteTsConfigPaths from "vite-tsconfig-paths";
 import tailwindcss from "@tailwindcss/vite";
 import { nitro } from "nitro/vite";
-
+import takumiPackageJson from "@takumi-rs/core/package.json" with { type: "json" };
 const config = defineConfig({
   plugins: [
     devtools(),
@@ -29,6 +29,12 @@ const config = defineConfig({
         replacement: "cookie-es",
       },
     ],
+  },
+  optimizeDeps: {
+    exclude: ["@takumi-rs/image-response"],
+  },
+  ssr: {
+    external: ["@takumi-rs/image-response"],
   },
 });
 

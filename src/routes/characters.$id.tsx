@@ -1,6 +1,16 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { auth } from "@clerk/tanstack-react-start/server";
+
+const authStateFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { isAuthenticated, userId } = await auth();
+
+  if (!isAuthenticated) {
+    return { userId: null };
+  }
+
+  return { userId };
+});
 
 const getCharacter = createServerFn({
   method: "GET",
@@ -23,17 +33,15 @@ const getCharacter = createServerFn({
     return character;
   });
 
-const authStateFn = createServerFn({ method: "GET" }).handler(async () => {
-  const { isAuthenticated, userId } = await auth();
-
-  if (!isAuthenticated) {
-    return { userId: null };
-  }
-
-  return { userId };
-});
-
 export const Route = createFileRoute("/characters/$id")({
+  // server: {
+  //   handlers: {
+  //     GET: async () => {
+  //       return new Response("yyy")
+  //     }
+  //   }
+  // }
+
   beforeLoad: async () => await authStateFn(),
   loader: ({ params }) => getCharacter({ data: { id: params.id } }),
   head: ({ loaderData }) => ({
@@ -49,7 +57,10 @@ export const Route = createFileRoute("/characters/$id")({
         property: "og:description",
         content: `ID: ${loaderData?.id}`,
       },
-      { property: "og:image", content: loaderData?.image },
+      {
+        property: "og:image",
+        content: `/characters/${loaderData?.id}/og`,
+      },
       { property: "og:type", content: "website" },
       // Twitter Card
       { name: "twitter:card", content: "summary_large_image" },
@@ -58,7 +69,10 @@ export const Route = createFileRoute("/characters/$id")({
         name: "twitter:description",
         content: `ID: ${loaderData?.id}`,
       },
-      { name: "twitter:image", content: loaderData?.image },
+      {
+        name: "twitter:image",
+        content: `/characters/${loaderData?.id}/og`,
+      },
     ],
   }),
   component: CharacterComponent,

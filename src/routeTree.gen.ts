@@ -16,6 +16,7 @@ import { Route as CharactersIdRouteImport } from './routes/characters.$id'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
+import { Route as CharactersIdOgRouteImport } from './routes/characters.$id.og'
 import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.index'
 import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
@@ -56,6 +57,11 @@ const DemoApiNamesRoute = DemoApiNamesRouteImport.update({
   path: '/demo/api/names',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CharactersIdOgRoute = CharactersIdOgRouteImport.update({
+  id: '/og',
+  path: '/og',
+  getParentRoute: () => CharactersIdRoute,
+} as any)
 const DemoStartSsrIndexRoute = DemoStartSsrIndexRouteImport.update({
   id: '/demo/start/ssr/',
   path: '/demo/start/ssr/',
@@ -80,8 +86,9 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/hello': typeof HelloRoute
-  '/characters/$id': typeof CharactersIdRoute
+  '/characters/$id': typeof CharactersIdRouteWithChildren
   '/characters': typeof CharactersIndexRoute
+  '/characters/$id/og': typeof CharactersIdOgRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -93,8 +100,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/hello': typeof HelloRoute
-  '/characters/$id': typeof CharactersIdRoute
+  '/characters/$id': typeof CharactersIdRouteWithChildren
   '/characters': typeof CharactersIndexRoute
+  '/characters/$id/og': typeof CharactersIdOgRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -107,8 +115,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/hello': typeof HelloRoute
-  '/characters/$id': typeof CharactersIdRoute
+  '/characters/$id': typeof CharactersIdRouteWithChildren
   '/characters/': typeof CharactersIndexRoute
+  '/characters/$id/og': typeof CharactersIdOgRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/hello'
     | '/characters/$id'
     | '/characters'
+    | '/characters/$id/og'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/hello'
     | '/characters/$id'
     | '/characters'
+    | '/characters/$id/og'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/hello'
     | '/characters/$id'
     | '/characters/'
+    | '/characters/$id/og'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -162,7 +174,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HelloRoute: typeof HelloRoute
-  CharactersIdRoute: typeof CharactersIdRoute
+  CharactersIdRoute: typeof CharactersIdRouteWithChildren
   CharactersIndexRoute: typeof CharactersIndexRoute
   DemoApiNamesRoute: typeof DemoApiNamesRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
@@ -224,6 +236,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoApiNamesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/characters/$id/og': {
+      id: '/characters/$id/og'
+      path: '/og'
+      fullPath: '/characters/$id/og'
+      preLoaderRoute: typeof CharactersIdOgRouteImport
+      parentRoute: typeof CharactersIdRoute
+    }
     '/demo/start/ssr/': {
       id: '/demo/start/ssr/'
       path: '/demo/start/ssr'
@@ -255,10 +274,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface CharactersIdRouteChildren {
+  CharactersIdOgRoute: typeof CharactersIdOgRoute
+}
+
+const CharactersIdRouteChildren: CharactersIdRouteChildren = {
+  CharactersIdOgRoute: CharactersIdOgRoute,
+}
+
+const CharactersIdRouteWithChildren = CharactersIdRoute._addFileChildren(
+  CharactersIdRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HelloRoute: HelloRoute,
-  CharactersIdRoute: CharactersIdRoute,
+  CharactersIdRoute: CharactersIdRouteWithChildren,
   CharactersIndexRoute: CharactersIndexRoute,
   DemoApiNamesRoute: DemoApiNamesRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,

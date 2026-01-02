@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@clerk/tanstack-react-start": "^0.27.12",
+    "@resvg/resvg-wasm": "^2.6.2",
     "@tailwindcss/vite": "^4.0.6",
+    "@takumi-rs/core": "^0.61.0",
+    "@takumi-rs/image-response": "^0.61.0",
     "@tanstack/react-devtools": "^0.7.0",
     "@tanstack/react-router": "^1.132.0",
     "@tanstack/react-router-devtools": "^1.132.0",
@@ -23,6 +26,7 @@
     "nitro": "latest",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "satori": "^0.18.3",
     "tailwindcss": "^4.0.6",
     "vite-tsconfig-paths": "^6.0.2"
   },
